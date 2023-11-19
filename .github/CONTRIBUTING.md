@@ -45,11 +45,12 @@ DO ReCreate_FoxBin2Prg.prg
 ```   
 **Note: Do not run FoxBin2Prg.prg directly.**
 3. On top of _FoxBin2Prg.prg_ there are two version numbers:   
-`#DEFINE DN_FB2PRG_VERSION      1.20`    
-`#DEFINE DC_FB2PRG_VERSION_REAL '1.20.00'`
+`#DEFINE DN_FB2PRG_VERSION      1.21`    
+`#DEFINE DC_FB2PRG_VERSION_REAL '1.21.01'`
 4. Please set the **minor** part of _DC_FB2PRG_VERSION_REAL_ to a new number.   
    **Do not** alter the **1.20** part. This is written to the text files.
-   Alteration might force that the files must be newly commited, what is not everybodies taste.
+   Alteration might force that the files must be newly commited, what is not everybodies taste.   
+   The value might be altered, if the file structure of the text files is changed.
 5. Add a meaningfull description of the change in the changes list on top of _FoxBin2Prg.prg_.
    The most recent entries for changes in the middle of this section around _* </HISTORIAL DE CAMBIOS Y NOTAS IMPORTANTES>_,   
    The most recent bugs are listed above _* </TESTEO Y REPORTE DE BUGS (AGRADECIMIENTOS)>_
@@ -76,4 +77,4 @@ DO Create_FoxBin2Prg.prg
 Thanks
 
 ----
-Last changed: _2023/08/30_
+Last changed: _2023/11/19_
