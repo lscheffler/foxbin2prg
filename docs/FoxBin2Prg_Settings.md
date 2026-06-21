@@ -52,16 +52,16 @@ in the settings object returned by get_DirSettings method of the API object. See
 | XXX_Conversion_Support | n | Defines the conversion operation per filetype |
 | | | For code:<br/> 0=No support,<br/>1=Generate _Text_ (Diff),<br/>2=Generate _Text_ and _Bin_ (Merge) |
 | | | For complex data:<br/> (PJX / DBC / DBF): 0=No support,<br/>1=Generate Header _Text_ only (Diff),<br/>2=Generate Header _Text_ and _Bin_ (Merge/Only Structure!),<br/>4=Generate _Text_ with DATA (Diff),<br/>8=Export and Import DATA (Merge/Structure & Data) |
-| PJX_Conversion_Support<br/>.n_PJX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional ((Merge/Only Structure!),<br/>4=Generate _Text_ with DATA (Diff), 8=Export and Import DATA (Merge/Structure & Data) and _bin_) support activated |
-| VCX_Conversion_Support<br/>.n_VCX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| SCX_Conversion_Support<br/>.n_SCX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| FRX_Conversion_Support<br/>.n_FRX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| LBX_Conversion_Support<br/>.n_LBX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| MNX_Conversion_Support<br/>.n_MNX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| DBC_Conversion_Support<br/>.n_DBC_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
-| DBF_Conversion_Support<br/>.n_DBF_Conversion_Support | 0, _1_, 2, 4, 8 | Default value is 1 - just _Text_ support activated.<br/>The support for regenerating DBFs structures (value = 2) are disabled by default to not overrite data accidentally. When activating bidirectional support, keep in mind that Data is not restored, just the structure and indexes!.<br/>A value of 4 is used to export Structure and Data, but exported data is not imported again.<br/>A value of 8 is used for bidirectional support (No General fields!). <br/> **Note:** This can be [changed per table](#configuration-file-per-table). |
-| FKY_Conversion_Support<br/>.n_FKY_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
-| MEM_Conversion_Support<br/>.n_MEM_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
+| PJX_Conversion_Support<br/>n_PJX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional ((Merge/Only Structure!),<br/>4=Generate _Text_ with DATA (Diff), 8=Export and Import DATA (Merge/Structure & Data) and _bin_) support activated |
+| VCX_Conversion_Support<br/>n_VCX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| SCX_Conversion_Support<br/>n_SCX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| FRX_Conversion_Support<br/>n_FRX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| LBX_Conversion_Support<br/>n_LBX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| MNX_Conversion_Support<br/>n_MNX_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| DBC_Conversion_Support<br/>n_DBC_Conversion_Support | 0, 1, _2_ | Default value is 2 - Bidirectional (_Text_ and _bin_) support activated |
+| DBF_Conversion_Support<br/>n_DBF_Conversion_Support | 0, _1_, 2, 4, 8 | Default value is 1 - just _Text_ support activated.<br/>The support for regenerating DBFs structures (value = 2) are disabled by default to not overrite data accidentally. When activating bidirectional support, keep in mind that Data is not restored, just the structure and indexes!.<br/>A value of 4 is used to export Structure and Data, but exported data is not imported again.<br/>A value of 8 is used for bidirectional support (No General fields!). <br/> **Note:** This can be [changed per table](#configuration-file-per-table). |
+| FKY_Conversion_Support<br/>n_FKY_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
+| MEM_Conversion_Support<br/>n_MEM_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
 |||
 | CheckFileInPath<br/>n_CheckFileInPath | _0_, 1, 2, 3 |Determines how 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.<br />0 = Ignore. Default<br />1 = Check and error out if file is not on same structure (for source control)<br />2 = Create absolute path if file is on different drive.<br />3 = Create absolute path if file is not in structure<br />See [Storing paths for pjx](./FoxBin2Prg_Internals.md#storing-paths-for-pjx) |
 |||
