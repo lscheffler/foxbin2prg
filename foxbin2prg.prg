@@ -878,7 +878,11 @@ If Upper(tcType)=='-C' Or tcType=='-t' ;
 		Case ( tcType == '-t' Or tcType == 't' ) And !Empty( Dbf() )
 			tc_InputFile = Dbf() + '._cfg'
 
-		Case ( Upper( tcType ) =='-C' Or Upper( tcType ) =='C' ) And tc_InputFile
+*!*	LScheffler 22.06.2026
+*including issue #130, [LScheffler] DataType error
+*		Case ( Upper( tcType ) =='-C' Or Upper( tcType ) =='C' ) And tc_InputFile
+		Case ( Upper( tcType ) =='-C' Or Upper( tcType ) =='C' ) And EMPTY(tc_InputFile)
+*!*	LScheffler 22.06.2026
 			tc_InputFile = 'FoxBin2PRG._cfg'
 
 	Endcase
@@ -18412,7 +18416,7 @@ Define Class c_conversor_pjx_a_prg As c_conversor_bin_a_prg
 			Local toModulo As CL_PROJECT Of 'FOXBIN2PRG.PRG'
 		#Endif
 		DoDefault( @toModulo, @toEx, @toFoxBin2Prg )
- 
+
 		TRY 
 				Local lnCodError, lcStr, lnPos, lnLen, lnServerCount, loReg, lnLen ;
 					, loEx As Exception ;
@@ -18428,6 +18432,8 @@ Define Class c_conversor_pjx_a_prg As c_conversor_bin_a_prg
 						If Vartype(toModulo) = "O" And toModulo.Class == 'Cl_project' Then
 *-- Ya esta cargado el objeto del Proyecto y se pasó por referencia
 						Else
+* SF 22.06.2026
+SET STEP ON
 							.loadModule( @toModulo, @toEx, @toFoxBin2Prg )
 						Endif
 
@@ -18450,7 +18456,13 @@ Define Class c_conversor_pjx_a_prg As c_conversor_bin_a_prg
 *!*	</change>
 *!*	</pdm>
 
-toFoxBin2Prg.n_CheckFileInPath=2
+*!*	Changed by: LScheffler 21.6.2026
+*!*	<pdm>
+*!*	<change date="{^2026-06-21,17:16:00}">Changed by: LScheffler<br />
+*!*	Left over of test from 19.3.2023, removed, issue #128
+*toFoxBin2Prg.n_CheckFileInPath=2
+*!*	/Changed by: LScheffler 21.6.2026
+
 						lcStr = ADDBS( Chrtran( loProject._HomeDir, ['], [] ))
 						IF toFoxBin2Prg.n_CheckFileInPath=1 THEN
 *let's scan all files against pjx home dir 
@@ -18918,7 +18930,7 @@ toFoxBin2Prg.n_CheckFileInPath=2
 *!*	Changed by: LScheffler 20.3.2023
 *!*	<pdm>
 *!*	<change date="{^2023-03-20,06:21:00}">Changed by: LScheffler<br />
-*!*	Text2Bin on PJX errors out for projects with an attach icon that has a drive letter on its path. Issue 93<br />
+*!*	Text2Bin on PJX errors out for projects with an attach icon that has a drive letter on it's path. Issue 93<br />
 *!*	Text2Bin creates a construct for relative paths that will fail if a file is on a different drive.<br />
 *!*	Solution, we create a new option <em>CheckFileInPath<em/> to control the transformation
 *!*	Determines 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.<br />

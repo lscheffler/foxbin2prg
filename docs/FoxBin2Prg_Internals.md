@@ -17,8 +17,8 @@ As far as possible these are the original documents. Changes are added where fun
    - [Configuration per table](#configuration-per-table)
    - [Parameters](#parameters)
    - [ZOrder](#zorder)
-     - [RemoveZOrderSetFromProps setting](#removezordersetfromprops-setting)
-     - [VFP ZOrder bug and fix](#vfp-zorder-bug-and-fix)
+      - [RemoveZOrderSetFromProps setting](#removezordersetfromprops-setting)
+      - [VFP ZOrder bug and fix](#vfp-zorder-bug-and-fix)
    - [DBC ordered fields](#dbc-ordered-fields)
    - [PAM Section](#pam-section)
    - [Property Ordering](#property-ordering)
@@ -311,22 +311,22 @@ Debug messages are translated (+90% of debug messages), but capitalization proce
 and are available just in Spanish (-10% of debug messages).
 
 ### Storing paths for pjx
-The project is basicaly designed to deal with a file structure where all files of a PJX
+The project is basically designed to deal with a file structure where all files of a PJX
 are on the same folder or within the subfolders of the PJX.
 This looks like the most usefull way when using source control systems.
 Any way, some prefer to spread there files over different drives.
 In default mode, this will fail on recreating the PJX.
 The default is kept because it's the fastest way, and recreating projects on forks or different comps might break the drives.   
 If files must be stored outside the structure,
-an option allows to store absolute paths for files not in the folder structure **only* in pj2 file.
+an option allows to store absolute paths for files not in the folder structure **only** in pj2 file.
 To configure this, starting with v1.19.78, you might enable it in foxbin2prg.cfg file:   
 ````
 *CheckFileInPath: && 0 = Ignore. Default, 1 = Check and error out if file is not on same structure (for source control), 2 = Create absolute path if file is on different drive.,3 = Create absolute path if file is not in structure
 ````
-- 0 - the way FoxBin2Prg works all the time
-- 1 - only testing. The process will stop if a file is not in the structure expected
-- 2 - Use an absolute path do store file location in pjx if the file is stored on a different drive.
-- 3 - Use an absolute path do store file location in pjx if the file is stored on a different drive or not in the folder structure but on same drive.
+- 0 - The way FoxBin2Prg works all the time
+- 1 - Only testing. The process will stop if a file is not in the structure expected
+- 2 - Use an absolute path to store file location in pjx if the file is stored on a different drive.
+- 3 - Use an absolute path to store file location in pjx if the file is stored on a different drive or not in the folder structure but on same drive.
 ### Create Class-Per-File
 Starting at v1.19.37 you can configure FoxBin2Prg to generate one class per file using TwoFox naming style "basefile.class.vc2"
 with the value "1"
@@ -612,4 +612,4 @@ See [FoxBin2Prg and use with git](./FoxBin2Prg_git.md)
 This project is part of [VFPX](https://vfpx.github.io/).    
 
 ----
-Last changed: _2026/06/21_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)
+Last changed: _2026/06/22_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)
