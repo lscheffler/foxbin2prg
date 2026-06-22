@@ -46,7 +46,7 @@ If you like to see Fernandos blog, or value his work:
 - [FINAL NOTE](#final-note)
 - [LICENCE](#licence)
 - [Changes](#changes)
-  - [Changes to Configuration](#changes-to-settings)
+  - [Changes to Configuration](#changes-to-configuration)
 - [Limitations](#limitations)
 - [**Documentation**](#documentation)
 - [**Helping with FoxBin2PRG / issues**](#helping-with-foxbin2prg--issues)
@@ -162,7 +162,7 @@ DO FOXBIN2PRG.PRG WITH "-c","template.cfg"      ==> Generates a template for Fox
 DO FOXBIN2PRG.PRG WITH "-C","template.cfg"      ==> Generates a template for FoxBin2Prg.cfg config file with active settings
 DO FOXBIN2PRG.PRG WITH "-t","template.dbf.cfg"  ==> Generates a template for table.dbf.cfg per table config file with newest settings
 ```
-See [Configuration](./FoxBin2Prg_Settings.md) for more information about configuration file(s).
+See [Configuration](./docs/FoxBin2Prg_Settings.md) for more information about configuration file(s).
 
 ----
 ## Limitations
