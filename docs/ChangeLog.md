@@ -27,6 +27,19 @@ _**Note:** you can click on the version number for downloading this version from
 
 | Rel.Date | Developer | Version | Details |
 | - | - | - | - |
+| 2026/06/22 | LScheffler | [v1.21.06](https://github.com/fdbozzo/foxbin2prg/releases/tag/v1.21.06) | **Bug Fix**: Brute force fixed Datatype error for tcDontShowProgress, #114 (omirian) |
+| | | | **Bug Fix:** Fixed a typo in toF1oxBin2Prg. The "1" is not needed. #121 (ccantrell72)                                                                                                      |
+| | | | **Bug Fix:** Unused methods set_BinTableFlags and set_NumTableFlags removed. #122 (k-dawg66) |
+| | | | **Bug Fix:** Hard coded setting n_CheckFileInPath removed. #128 (LScheffler); from #119 (ccantrell72) |
+| | | | **Bug Fix:** Creating config without target fails. #130 (LScheffler) |
+| | | | **Enhancement:** Setting CheckFileInPath has now option to handle UNC paths (LScheffler) |
+| | | | **Enhancement:** Non relative paths are not relative to pjx, not HomeDir #119 (ccantrell72) |
+| | | | **Docu:** Static paths removed |
+| | | | **Docu:** Reworked, clarification EXE vs PRG |
+| | | | **Docu:** git, how to solve broken line endings |
+| | | | **Docu:** Better description of configuration, all configuration in one special file, better linked |
+| | | | **Docu:** Configuration now shows the related object properties |
+| | | | **Docu:** API |
 | 2026/06/18 | LScheffler | [v1.21.05](https://github.com/fdbozzo/foxbin2prg/releases/tag/v1.21.05) | **Bug Fix**: Brute force fixed Datatype error for tcDontShowProgress, #114 (omirian) |
 | | | | **Bug Fix**: Fixed missing link SCM documentation, #116 (ToniKoehler) |
 | | | | **Bug Fix**: Fixed a problem that cDontShowProgress parameter will be ignored if ShowProgressbar property is used. #118 (LScheffler) |
@@ -457,4 +470,4 @@ _**Note:** you can click on the version number for downloading this version from
 This project is part of [VFPX](https://vfpx.github.io/).   
 
 ----
-Last changed: _2016/06/18_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)
+Last changed: _2016/06/22_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)

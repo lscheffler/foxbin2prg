@@ -1,5 +1,5 @@
 # FoxBin2Prg
-## Version 1.21.05
+## Version 1.21.06
 **Binary/Text Converting program for Microsoft Visual FoxPro**
 
 ## Lutz Scheffler
@@ -189,4 +189,4 @@ If you like to see Fernando's blog, or value his work:
 - [![DONATE!](http://www.pngall.com/wp-content/uploads/2016/05/PayPal-Donate-Button-PNG-File-180x100.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=fdbozzo%40gmail%2ecom&amp;lc=ES&amp;item_name=FoxBin2Prg&amp;item_number=FoxBin2Prg&amp;currency_code=USD&amp;bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) 
 
 ----
-Last changed: _2026/06/21_ ![Picture](./docs/pictures/vfpxpoweredby_alternative.gif)
+Last changed: _2026/06/22_ ![Picture](./docs/pictures/vfpxpoweredby_alternative.gif)

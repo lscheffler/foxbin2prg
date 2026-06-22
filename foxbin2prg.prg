@@ -1,5 +1,5 @@
 #DEFINE	DN_FB2PRG_VERSION		1.21
-#DEFINE	DC_FB2PRG_VERSION_REAL	'1.21.05'
+#DEFINE	DC_FB2PRG_VERSION_REAL	'1.21.06'
 
 *---------------------------------------------------------------------------------------------------
 * Module.........: FOXBIN2PRG.PRG - FOR VISUAL FOXPRO 9.0
@@ -334,7 +334,17 @@
 * 18/06/2026	LScheffler	v1.21.05	Docu: Some settings will not follow inheritence, documented in docu and setting files generated via -Cc options.
 * 18/06/2026	LScheffler	v1.21.05	Docu: Minor changes
 * 19/06/2026	LScheffler	v1.21.06	Bug Fix: Fixed a typo in toF1oxBin2Prg. The "1" is not needed. #121 (ccantrell72)
-* 19/06/2026	LScheffler	v1.21.06	Bug Fix: Unused methods set_BinTableFlags and set_NumTableFlags removed. #122
+* 19/06/2026	LScheffler	v1.21.06	Bug Fix: Unused methods set_BinTableFlags and set_NumTableFlags removed. #122 (k-dawg66)
+* 22/06/2026	LScheffler	v1.21.06	Bug Fix: Hard coded setting n_CheckFileInPath removed. #128 (LScheffler); from #119 (ccantrell72)
+* 22/06/2026	LScheffler	v1.21.06	Bug Fix: Creating config without target fails. #130 (LScheffler)
+* 22/06/2026	LScheffler	v1.21.06	Enhancement: Setting CheckFileInPath has now option to handle UNC paths (LScheffler)
+* 22/06/2026	LScheffler	v1.21.06	Enhancement: Non relative paths are not relative to pjx, not HomeDir #119 (ccantrell72)
+* 22/06/2026	LScheffler	v1.21.06	Docu: Static paths removed
+* 22/06/2026	LScheffler	v1.21.06	Docu: Reworked, clarification EXE vs PRG
+* 22/06/2026	LScheffler	v1.21.06	Docu: git, how to solve broken line endings
+* 22/06/2026	LScheffler	v1.21.06	Docu: Better description of configuration, all configuration in one special file, better linked
+* 22/06/2026	LScheffler	v1.21.06	Docu: Configuration now shows the related object properties
+* 22/06/2026	LScheffler	v1.21.06	Docu: API
 * </HISTORIAL DE CAMBIOS Y NOTAS IMPORTANTES>
 *
 *---------------------------------------------------------------------------------------------------
@@ -522,6 +532,8 @@
 * 18/06/2026	LScheffler			Bug REPORT v1.21.04	Fixed a problem that cDontShowProgress parameter will be ignored if ShowProgressbar property is used. #118
 * 19/06/2026	ccantrell72			Bug REPORT v1.21.05	Typo in toF1oxBin2Prg. The "1" is not needed. #121
 * 19/06/2026	k-dawg66			Bug REPORT v1.21.05	Parameter name mismatch 'tcTableFlags' vs 'tcBinTableFlags'. #122
+* 22/06/2026	LScheffler			Bug REPORT v1.21.05	Hard coded setting n_CheckFileInPath removed. #128 (LScheffler); from #119 (ccantrell72)
+* 22/06/2026	LScheffler			Bug REPORT v1.21.05	Creating config without target fails. #130 (LScheffler)
 
 * </TESTEO Y REPORTE DE BUGS (AGRADECIMIENTOS)>
 *
@@ -2955,7 +2967,7 @@ Define Class c_foxbin2prg As Session
 * files in non subpath of the PJX
 								Case Left( laConfig(m.I), 16 ) == Lower('CheckFileInPath:')
 									lcValue	= Alltrim( Substr( laConfig(m.I), 17 ) )
-									If Inlist( lcValue, '0', '1', '2', '3' ) Then
+									If Inlist( lcValue, '0', '1', '2', '3', '4', '5', '6' ) Then
 										lo_CFG.n_CheckFileInPath	= Int( Val(lcValue) )
 										.writeLog( C_TAB + Justfname(lcConfigFile) + ' > CheckFileInPath:            ' + Transform(lcValue) )
 									Endif
@@ -18422,7 +18434,8 @@ Define Class c_conversor_pjx_a_prg As c_conversor_bin_a_prg
 					, loEx As Exception ;
 					, loProject As CL_PROJECT Of 'FOXBIN2PRG.PRG' ;
 					, loServerHead As CL_PROJ_SRV_HEAD Of 'FOXBIN2PRG.PRG' ;
-					, loLang As CL_LANG Of 'FOXBIN2PRG.PRG'
+					, loLang As CL_LANG Of 'FOXBIN2PRG.PRG' ;
+					, llHasDrive As Boolean
 
 				loLang			= _Screen.o_FoxBin2Prg_Lang
 				Store .Null. To loProject, loReg, loServerHead
@@ -18432,8 +18445,6 @@ Define Class c_conversor_pjx_a_prg As c_conversor_bin_a_prg
 						If Vartype(toModulo) = "O" And toModulo.Class == 'Cl_project' Then
 *-- Ya esta cargado el objeto del Proyecto y se pasó por referencia
 						Else
-* SF 22.06.2026
-SET STEP ON
 							.loadModule( @toModulo, @toEx, @toFoxBin2Prg )
 						Endif
 
@@ -18460,28 +18471,44 @@ SET STEP ON
 *!*	<pdm>
 *!*	<change date="{^2026-06-21,17:16:00}">Changed by: LScheffler<br />
 *!*	Left over of test from 19.3.2023, removed, issue #128
+*!*	</pdm>
 *toFoxBin2Prg.n_CheckFileInPath=2
 *!*	/Changed by: LScheffler 21.6.2026
 
-						lcStr = ADDBS( Chrtran( loProject._HomeDir, ['], [] ))
-						IF toFoxBin2Prg.n_CheckFileInPath=1 THEN
+*!*	Changed by: LScheffler 22.6.2026
+*!*	<pdm>
+*!*	<change date="{^2026-06-22,15:12:00}">Changed by: LScheffler<br />
+*!*	Project.HomeDir is not the root for the relative names of files.
+*!*	</pdm>
+*						lcStr = ADDBS( Chrtran( loProject._HomeDir, ['], [] ))
+						lcStr = toFoxBin2Prg.c_InputFile
+*!*	/Changed by: LScheffler 22.6.2026
+
+						IF INLIST(toFoxBin2Prg.n_CheckFileInPath,1,4) THEN
 *let's scan all files against pjx home dir 
-							IF !Empty(loProject._MainProg) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._MainProg, m.lcStr))) THEN
+							THIS.GetPathFromHome(loProject._MainProg, m.lcStr, "", "", @llHasDrive, toFoxBin2Prg)
+*							IF !Empty(loProject._MainProg) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._MainProg, m.lcStr))) THEN
+							IF !Empty(loProject._MainProg) AND m.llHasDrive THEN
 								lcStr = loLang.C_PJXPATH_ERR_LOC1 + loProject._MainProg + loLang.C_PJXPATH_ERR_LOC4 + m.lcStr + loLang.C_PJXPATH_ERR_LOC5
 					 			ERROR 1941
 							ENDIF &&!Empty(loProject._MainProg) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._MainProg, m.lcStr))) 
-							IF !Empty(loProject._Icon) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._Icon, m.lcStr))) THEN
+*
+							THIS.GetPathFromHome(loProject._Icon, m.lcStr, "", "", @llHasDrive, toFoxBin2Prg)
+*							IF !Empty(loProject._Icon) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._Icon, m.lcStr))) THEN
+							IF !Empty(loProject._Icon) AND m.llHasDrive THEN
 								lcStr = loLang.C_PJXPATH_ERR_LOC2 + loProject._Icon + loLang.C_PJXPATH_ERR_LOC4 + m.lcStr + loLang.C_PJXPATH_ERR_LOC5
 					 			ERROR 1941
 							ENDIF &&!Empty(loProject._Icon) AND !EMPTY( JUSTDRIVE( SYS( 2014, loProject._Icon, m.lcStr))) 
 							
 							For Each loReg In loProject &&FOXOBJECT
-							IF !EMPTY( JUSTDRIVE( SYS( 2014, loReg.Name,m.lcStr))) THEN
-								lcStr = loLang.C_PJXPATH_ERR_LOC3 + loReg.Name + loLang.C_PJXPATH_ERR_LOC4 + m.lcStr + loLang.C_PJXPATH_ERR_LOC5
-					 			ERROR 1941
+								THIS.GetPathFromHome(loReg.Name, m.lcStr, "", "", @llHasDrive, toFoxBin2Prg)
+*								IF !EMPTY( JUSTDRIVE( SYS( 2014, loReg.Name,m.lcStr))) THEN
+								IF m.llHasDrive THEN
+									lcStr = loLang.C_PJXPATH_ERR_LOC3 + loReg.Name + loLang.C_PJXPATH_ERR_LOC4 + m.lcStr + loLang.C_PJXPATH_ERR_LOC5
+						 			ERROR 1941
 								ENDIF &&!EMPTY( JUSTDRIVE( SYS( 2014, loReg.Name, m.lcStr))) 
 							Endfor
-						ENDIF &&toFoxBin2Prg.n_CheckFileInPath=1 
+						ENDIF &&INLIST(toFoxBin2Prg.n_CheckFileInPath,1,4)
 
 *!*	/Changed by: LScheffler 19.3.2023
 
@@ -18616,7 +18643,7 @@ SET STEP ON
 							If Not Empty(loReg.COMMENTS)
 *								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(lcCurdir + '" + loReg.Name + "').Description = '" + loReg.COMMENTS + "'"
 								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(" +;
-								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", toFoxBin2Prg) +;
+								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", , toFoxBin2Prg) +;
 								").Description = '" + loReg.COMMENTS + "'"
 							Endif
 							loReg	= .Null.
@@ -18636,7 +18663,7 @@ SET STEP ON
 							If loReg.EXCLUDE
 *								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(lcCurdir + '" + loReg.Name + "').Exclude = .T."
 								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(" +;
-								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", toFoxBin2Prg) +;
+								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", , toFoxBin2Prg) +;
 								").Exclude = .T."
 							Endif
 							loReg	= .Null.
@@ -18656,7 +18683,7 @@ SET STEP ON
 							If Inlist( Upper( Justext( loReg.Name ) ), 'H','FPW' )
 *								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(lcCurdir + '" + loReg.Name + "').Type = 'T'"
 								C_FB2PRG_CODE = C_FB2PRG_CODE + Chr(13) + Chr(10) + Chr(9) + ".ITEM(" +;
-								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", toFoxBin2Prg) +;
+								THIS.GetPathFromHome(m.loReg.Name, m.lcStr, "lcCurdir + '", "'", , toFoxBin2Prg) +;
 								").Type = 'T'"
 							Endif
 							loReg	= .Null.
@@ -18675,7 +18702,7 @@ SET STEP ON
 						If Not Empty(loProject._MainProg)
 *							<<>>	.SetMain(lcCurdir + '<<loProject._MainProg>>')
 							TEXT TO C_FB2PRG_CODE ADDITIVE TEXTMERGE NOSHOW FLAGS 1+2 PRETEXT 1+2
-							<<>>	.SetMain(<<THIS.GetPathFromHome(m.loProject._MainProg, m.lcStr, "lcCurdir + '", "'", m.toFoxBin2Prg)>>)
+							<<>>	.SetMain(<<THIS.GetPathFromHome(m.loProject._MainProg, m.lcStr, "lcCurdir + '", "'", , m.toFoxBin2Prg)>>)
 
 							ENDTEXT
 						Endif
@@ -18683,7 +18710,7 @@ SET STEP ON
 						If Not Empty(loProject._Icon)
 *							<<>>	.Icon = lcCurdir + '<<loProject._Icon>>'
 							TEXT TO C_FB2PRG_CODE ADDITIVE TEXTMERGE NOSHOW FLAGS 1+2 PRETEXT 1+2
-							<<>>	.Icon = <<THIS.GetPathFromHome(m.loProject._Icon, m.lcStr, "lcCurdir + '", "'", toFoxBin2Prg)>>
+							<<>>	.Icon = <<THIS.GetPathFromHome(m.loProject._Icon, m.lcStr, "lcCurdir + '", "'", , toFoxBin2Prg)>>
 							ENDTEXT
 						Endif
 
@@ -18938,6 +18965,8 @@ SET STEP ON
 *!*	1 Check and error out if file is not on same structure (for source control)<br />
 *!*	2 Create absolute path if file is on different drive.<br />
 *!*	3 Create absolute path if file is not in structure<br />
+*!*	4 Create absolute path if file is on different drive or UNC path.<br />
+*!*	5 Create absolute path if file is not in structure, including UNC path.<br />
 *!*	</change>
 *!*	</pdm>
 	Procedure GetPathFromHome
@@ -18947,28 +18976,57 @@ SET STEP ON
 	* tcProjPath				(v! IN    ) Home directory of a project 
 	* tcPrefix					(v! IN    ) Prefix for return
 	* tcSufix					(v! IN    ) Sufix for return
+	* tlHasDrive				(v! OUT   ) tcFilePath is not stored relative to tcProjPath, depends on toFoxBin2Prg.n_CheckFileInPath
 	* toFoxBin2Prg				(v! IN    ) Referencia al objeto principal
 	* 
-	* Return					String to File in text file
+	* Return					String to file in text file
 	*---------------------------------------------------------------------------------------------------
-		Lparameters tcFilePath, tcProjPath, tcPrefix, tcSufix, toFoxBin2Prg
+		Lparameters tcFilePath, tcProjPath, tcPrefix, tcSufix, tlHasDrive, toFoxBin2Prg
 	
 		Local;
-			lcReturn As String
+			lcReturn As String,;
+			lcPJX As String,;
+			lcFile As String,;
+			ln_CheckFileInPath As Integer
 			
 		lcReturn = SYS( 2014, m.tcFilePath, m.tcProjPath)
-		Do Case
-			Case m.toFoxBin2Prg.n_CheckFileInPath=2 AND !EMPTY( JUSTDRIVE( m.lcReturn))
-*!*	2 Create absolute path if file is on different drive.<br />
-		lcReturn = '"' + m.tcFilePath + '"'
 
-			Case m.toFoxBin2Prg.n_CheckFileInPath=3 AND (!EMPTY( JUSTDRIVE( m.lcReturn)) OR LEFT(m.lcReturn, 2) = "..")
+		ln_CheckFileInPath = m.toFoxBin2Prg.n_CheckFileInPath
+
+		IF Inlist(m.ln_CheckFileInPath,1,2,3,4,5,6) THEN
+			lcPJX = Justdrive(m.lcReturn)
+			tlHasDrive = !EMPTY(m.lcPJX)
+			
+			IF !m.tlHasDrive And Inlist(m.ln_CheckFileInPath,1,3,4,6) Then
+*file on same drive, but not on structure
+				tlHasDrive = LEFT(m.lcReturn,2)=='..'
+			ENDIF &&!m.tlHasDrive And INLIST(m.ln_CheckFileInPath,1,4)
+
+			IF Inlist(m.ln_CheckFileInPath,4,5,6) THEN
+				ln_CheckFileInPath = m.ln_CheckFileInPath-3
+				IF !m.tlHasDrive And LEFT(m.lcReturn,2)=='\\' Then
+*no drive in file, but server
+					lcPJX  = STREXTRACT(m.lcReturn,'\\','\',1,2)	&& get server
+					tcProj = STREXTRACT(m.tcProjPath,'\\','\',1,2)	&& if pjx on server, server, if drive, empty
+
+					tlHasDrive = !Upper(m.lcPJX)==Upper(m.tcProj)	&& if not on the same server
+				ENDIF &&Empty(m.lcPJXDrive) And LEFT(m.lcReturn,2)=='\\'
+			ENDIF &&INLIST(m.ln_CheckFileInPath,4,5,6)
+		ENDIF &&INLIST(m.ln_CheckFileInPath,1,2,3,4,5,6)
+
+
+		Do Case
+			Case Inlist(m.ln_CheckFileInPath,0,1)
+*!*	just normal relative path
+				lcReturn = m.tcPrefix + m.tcFilePath + m.tcSufix
+			Case INLIST(m.ln_CheckFileInPath,2,3) AND m.tlHasDrive
+*!*	2 Create absolute path if file is on different drive.<br />
 *!*	3 Create absolute path if file is not in structure<br />
-		lcReturn = '"' + m.tcFilePath + '"'
-	
+				lcReturn = '"' + m.tcFilePath + '"'
+
 			Otherwise
 *!*	just normal relative path
-		lcReturn = m.tcPrefix + m.tcFilePath + m.tcSufix
+				lcReturn = m.tcPrefix + m.tcFilePath + m.tcSufix
 	
 		Endcase
 	
@@ -31796,11 +31854,14 @@ Define Class CL_LANG As Custom
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for pjx files
-						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.
+						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX.
 						<<>>                               && 0 Ignore. Default
 						<<>>                               && 1 Check and error out if file is not on same structure (for source control)
 						<<>>                               && 2 Create absolute path if file is on different drive.
 						<<>>                               && 3 Create absolute path if file is not in structure
+						<<>>                               && 4 like 1, but additional handler for UNC path.
+						<<>>                               && 5 like 2, but additional handler for UNC path.
+						<<>>                               && 6 like 3, but additional handler for UNC path.
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for container files (not pjx)
@@ -32155,11 +32216,14 @@ Define Class CL_LANG As Custom
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for pjx files
-						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.
+						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX.
 						<<>>                               && 0 Ignore. Default
 						<<>>                               && 1 Check and error out if file is not on same structure (for source control)
 						<<>>                               && 2 Create absolute path if file is on different drive.
 						<<>>                               && 3 Create absolute path if file is not in structure
+						<<>>                               && 4 like 1, but additional handler for UNC path.
+						<<>>                               && 5 like 2, but additional handler for UNC path.
+						<<>>                               && 6 like 3, but additional handler for UNC path.
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for container files (not pjx)
@@ -32519,12 +32583,14 @@ Define Class CL_LANG As Custom
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for pjx files
-						<<>>CheckFileInPath: 0             && Bestimmt, ob bein Erstellen von pj2 Dateien Dateien in der ordnerstruktur des PJX sein müssen.
-						<<>>                               && Keine Behandlung für UNC Pfade.
+						<<>>CheckFileInPath: 0             && Bestimmt, ob bein Erstellen von pj2 Dateien Dateien in der Ordnerstruktur des PJX sein müssen.
 						<<>>                               && 0 Ignorieren. Default
 						<<>>                               && 1 Teste, und breche ab wenn die Datei nicht in der Struktur ist (für Quellcodeverwaltung)
 						<<>>                               && 2 Erstelle absoluten Pfad für Dateien auf einem anderen Laufwerk.
 						<<>>                               && 3 Erstelle absoluten Pfad für Dateien die nicht in der Ordnerstruktur sind.
+						<<>>                               && 4 wie 1, arbeitet auch für UNC Pfade.
+						<<>>                               && 5 wie 2, arbeitet auch für UNC Pfade.
+						<<>>                               && 6 wie 3, arbeitet auch für UNC Pfade.
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>> ------Einstellungen für Container-Dateien (nicht pjx)
@@ -32898,11 +32964,14 @@ Define Class CL_LANG As Custom
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for pjx files
-						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.
+						<<>>CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX.
 						<<>>                               && 0 Ignore. Default
 						<<>>                               && 1 Check and error out if file is not on same structure (for source control)
 						<<>>                               && 2 Create absolute path if file is on different drive.
 						<<>>                               && 3 Create absolute path if file is not in structure
+						<<>>                               && 4 like 1, but additional handler for UNC path.
+						<<>>                               && 5 like 2, but additional handler for UNC path.
+						<<>>                               && 6 like 3, but additional handler for UNC path.
 						<<>>----------------------------------------------------------------------------------------------------------------
 						<<>>
 						<<>>Setting for container files (not pjx)

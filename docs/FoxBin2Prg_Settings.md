@@ -63,7 +63,7 @@ in the settings object returned by get_DirSettings method of the API object. See
 | FKY_Conversion_Support<br/>n_FKY_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
 | MEM_Conversion_Support<br/>n_MEM_Conversion_Support | 0, _1_ | Default value is 1 - _Text_ support activated |
 |||
-| CheckFileInPath<br/>n_CheckFileInPath | _0_, 1, 2, 3 |Determines how 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.<br />0 = Ignore. Default<br />1 = Check and error out if file is not on same structure (for source control)<br />2 = Create absolute path if file is on different drive.<br />3 = Create absolute path if file is not in structure<br />See [Storing paths for pjx](./FoxBin2Prg_Internals.md#storing-paths-for-pjx) |
+| CheckFileInPath<br/>n_CheckFileInPath | _0_, 1, 2, 3, 4, 5 | Determines how 2Txt deals with files not in the subfolders of the PJX.<br />0 = Ignore. Default<br />1 = Check and error out if file is not on same structure (for source control)<br />2 = Create absolute path if file is on different drive.<br />3 = Create absolute path if file is not in structure.<br />4 is like 1, just with additional handling UNC paths.<br />5 is like 2, just with additional handling UNC paths.<br />6 is like 3, just with additional handling UNC paths.<br />See [Storing paths for pjx](./FoxBin2Prg_Internals.md#storing-paths-for-pjx) |
 |||
 | UseClassPerFile<br/>n_UseClassPerFile | _0_, 1, 2 | 0=One library _Text_ file,<br/>1=Multiple file.class.vc2 files,<br/>2=Multiple file.baseclass.class.vc2 files<br/>See [Create Class-Per-File](./FoxBin2Prg_Internals.md#create-class-per-file) |
 | [RedirectClassPerFileToMain:](./FoxBin2Prg_Internals.md#redirectclassperfiletomain:)<br/>l_RedirectClassPerFileToMain | _0_, 1 | 0=Don't redirect to file.vcx,<br/>1=Redirect to file.vcx when selecting file.class.vc2<br/>RedirectClassType: 1 precedes this setting |
@@ -167,7 +167,7 @@ DO FOXBIN2PRG.PRG WITH "-c","template.cfg"    &&==> Generates a template for Fox
 ```
 *################################################################################################################
 *FOXBIN2PRG.CFG configuration options: (If no values given, these are the DEFAULTS)
-*Version: v1.21.05
+*Version: v1.21.06
 *****************************************************************************************************************
 
 * Note, configuration files will follow an inheritance.
@@ -226,11 +226,14 @@ DO FOXBIN2PRG.PRG WITH "-c","template.cfg"    &&==> Generates a template for Fox
 *----------------------------------------------------------------------------------------------------------------
 
 *Setting for pjx files
-*CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX. No handler for UNC paths.
+*CheckFileInPath: 0             && Determines 2Txt deals with files not in the subfolders of the PJX.
 *                               && 0 Ignore. Default
 *                               && 1 Check and error out if file is not on same structure (for source control)
 *                               && 2 Create absolute path if file is on different drive.
 *                               && 3 Create absolute path if file is not in structure
+*                               && 4 like 1, but additional handler for UNC path.
+*                               && 5 like 2, but additional handler for UNC path.
+*                               && 6 like 3, but additional handler for UNC path.
 *----------------------------------------------------------------------------------------------------------------
 
 *Setting for container files (not pjx)
@@ -394,4 +397,4 @@ This was set up to ignore the local GoFish_ settings and history folder, the fil
 This project is part of [VFPX](https://vfpx.github.io/).    
 
 ----
-Last changed: _2026/06/21_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)
+Last changed: _2026/06/22_ ![Picture](./pictures/vfpxpoweredby_alternative.gif)
